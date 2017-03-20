@@ -40,13 +40,13 @@ def pipeline(image):
     l_channel = cv2.cvtColor(img, cv2.COLOR_RGB2LUV)[:,:,0]
     
     # Set the upper and lower thresholds for the b channel
-    b_thresh_min = 145
+    b_thresh_min = 155
     b_thresh_max = 200
     b_binary = np.zeros_like(b_channel)
     b_binary[(b_channel >= b_thresh_min) & (b_channel <= b_thresh_max)] = 1
     
     # Set the upper and lower thresholds for the l channel
-    l_thresh_min = 215
+    l_thresh_min = 230
     l_thresh_max = 255
     l_binary = np.zeros_like(l_channel)
     l_binary[(l_channel >= l_thresh_min) & (l_channel <= l_thresh_max)] = 1
@@ -425,7 +425,7 @@ def process_vid(image):
     # Calculate the vehicle position relative to the center of the lane
     position = (rightx_int+leftx_int)/2
     distance_from_center = abs((640 - position)*3.7/700) 
-    
+    center = abs(640 - position)
     
     src = np.float32(
             [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
@@ -457,11 +457,10 @@ def process_vid(image):
     
     cv2.putText(result,'Radius of curvature is ' +str(int((left_curverad + right_curverad)/2)) ,(10,60), font, 1,(255,255,255),2)
     
-    if distance_from_center < 640:
-        cv2.putText(result, 'Vehicle is {:.2f}m left of the center'.format(distance_from_center*3.7/700), (10,90), font, 1,(255,255,255),2)
+    if center < 640:
+        cv2.putText(result, 'Vehicle is {:.2f}m left of the center'.format(center*3.7/700), (10,90), font, 1,(255,255,255),2)
     else:
-        cv2.putText(result, 'Vehicle is {:.2f}m right of the center'.format(distance_from_center*3.7/700), (10,90), font, 1,(255,255,255),2)
-    
+        cv2.putText(result, 'Vehicle is {:.2f}m right of the center'.format(center*3.7/700), (10,90), font, 1,(255,255,255),2)
     
     return result
 Left = Line()
