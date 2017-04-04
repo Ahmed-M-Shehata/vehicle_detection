@@ -184,7 +184,7 @@ def classify_boxes(image, svc, X_scaler):
 
 
     windows = slide_window(image, x_start_stop=[720, None], y_start_stop=(400, 656), 
-                        xy_window=(96, 128), xy_overlap=(0.9, 0.9))
+                        xy_window=(96, 96), xy_overlap=(0.9, 0.9))
 
     hot_windows = search_windows(image, windows, svc, X_scaler, color_space=color_space, 
                             spatial_size=spatial_size, hist_bins=hist_bins, 
@@ -287,11 +287,11 @@ def draw_labeled_bboxes(img, labels):
     # Return the image
     return img
 # Define parameters for feature extraction
-color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 9  # HOG orientations
+color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 11  # HOG orientations
 pix_per_cell = 16 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
-hog_channel = 1 # Can be 0, 1, 2, or "ALL"
+hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
 spatial_size = (16, 16) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off

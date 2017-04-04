@@ -16,6 +16,7 @@ from sklearn.preprocessing import StandardScaler
 from help_func import *
 from sklearn.model_selection import train_test_split
 from scipy.ndimage.measurements import label
+from collections import deque
 from moviepy.editor import VideoFileClip
  
 # Read in cars and notcars
@@ -25,11 +26,11 @@ print(len(cars))
 print(len(notcars))
 
 # Define parameters for feature extraction
-color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 9  # HOG orientations
+color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 11  # HOG orientations
 pix_per_cell = 16 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
-hog_channel = 1 # Can be 0, 1, 2, or "ALL"
+hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
 spatial_size = (16, 16) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
@@ -86,15 +87,18 @@ test = classify_boxes(image, svc, X_scaler)
 result = draw_boxes(draw_image, test)
 heat = np.zeros_like(image[:,:,0]).astype(np.float)
 heat = add_heat(heat, test)
-heat = apply_threshold(heat, 3)
+heat = apply_threshold(heat, 1)
 heatmap = np.clip(heat, 0, 255)
 
 def process_frame(image):
     windows = classify_boxes(image, svc, X_scaler)
     heat = np.zeros_like(image[:,:,0]).astype(np.float)
     heat = add_heat(heat, windows)
-    heat = apply_threshold(heat, 3)   
-    heatmap = np.clip(heat, 0, 255)
+    heat = apply_threshold(heat, 1)
+    d = deque(maxlen = 5)
+    d.append(heat)
+    av = sum(d)/len(d)
+    heatmap = np.clip(av, 0, 255)
     labels = label(heatmap)
     draw_img = draw_labeled_bboxes(np.copy(image), labels)
     
