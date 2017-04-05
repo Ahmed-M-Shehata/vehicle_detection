@@ -15,6 +15,7 @@ from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from help_func import *
 from sklearn.model_selection import train_test_split
+from sklearn import grid_search
 from scipy.ndimage.measurements import label
 from collections import deque
 from moviepy.editor import VideoFileClip
@@ -70,9 +71,11 @@ print('Using:',orient,'orientations',pix_per_cell,
     'pixels per cell and', cell_per_block,'cells per block')
 print('Feature vector length:', len(X_train[0]))
 # Use a linear SVC 
-svc = LinearSVC()
+svr = LinearSVC()
+parameters = {'C':[10**-3, 1]}
 # Check the training time for the SVC
 t=time.time()
+svc = grid_search.GridSearchCV(svr, parameters)
 svc.fit(X_train, y_train)
 t2 = time.time()
 print(round(t2-t, 2), 'Seconds to train SVC...')
