@@ -170,8 +170,9 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
         test_features = scaler.transform(np.array(features).reshape(1, -1))
         #6) Predict using your classifier
         prediction = clf.predict(test_features)
+        decision = clf.decision_function(test_features)
         #7) If positive (prediction == 1) then save the window
-        if prediction == 1:
+        if prediction == 1 :
             on_windows.append(window)
     #8) Return windows for positive detections
     return on_windows
@@ -184,7 +185,7 @@ def classify_boxes(image, svc, X_scaler):
 
 
     windows = slide_window(image, x_start_stop=[720, None], y_start_stop=(400, 656), 
-                        xy_window=(96, 96), xy_overlap=(0.9, 0.9))
+                        xy_window=(64, 64), xy_overlap=(0.9, 0.9))
 
     hot_windows = search_windows(image, windows, svc, X_scaler, color_space=color_space, 
                             spatial_size=spatial_size, hist_bins=hist_bins, 
@@ -287,13 +288,13 @@ def draw_labeled_bboxes(img, labels):
     # Return the image
     return img
 # Define parameters for feature extraction
-color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 11  # HOG orientations
-pix_per_cell = 16 # HOG pixels per cell
-cell_per_block = 2 # HOG cells per block
+color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 6  # HOG orientations
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 3 # HOG cells per block
 hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
 spatial_size = (16, 16) # Spatial binning dimensions
-hist_bins = 32    # Number of histogram bins
-spatial_feat = True # Spatial features on or off
-hist_feat = True # Histogram features on or off
+hist_bins = 24    # Number of histogram bins
+spatial_feat = False # Spatial features on or off
+hist_feat = False # Histogram features on or off
 hog_feat = True # HOG features on or off

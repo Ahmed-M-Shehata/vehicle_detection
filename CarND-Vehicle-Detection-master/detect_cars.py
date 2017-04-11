@@ -27,15 +27,15 @@ print(len(cars))
 print(len(notcars))
 
 # Define parameters for feature extraction
-color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 11  # HOG orientations
-pix_per_cell = 16 # HOG pixels per cell
-cell_per_block = 2 # HOG cells per block
+color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 6  # HOG orientations
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 3 # HOG cells per block
 hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
 spatial_size = (16, 16) # Spatial binning dimensions
-hist_bins = 32    # Number of histogram bins
-spatial_feat = True # Spatial features on or off
-hist_feat = True # Histogram features on or off
+hist_bins = 24    # Number of histogram bins
+spatial_feat = False # Spatial features on or off
+hist_feat = False # Histogram features on or off
 hog_feat = True # HOG features on or off
 y_start_stop = [400, 656] # Min and max in y to search in slide_window()
 
@@ -97,10 +97,11 @@ def process_frame(image):
     windows = classify_boxes(image, svc, X_scaler)
     heat = np.zeros_like(image[:,:,0]).astype(np.float)
     heat = add_heat(heat, windows)
-    heat = apply_threshold(heat, 1)
+    heat = apply_threshold(heat, 5)
     d = deque(maxlen = 5)
     d.append(heat)
     av = sum(d)/len(d)
+#    heat = apply_threshold(av, 2)
     heatmap = np.clip(av, 0, 255)
     labels = label(heatmap)
     draw_img = draw_labeled_bboxes(np.copy(image), labels)
